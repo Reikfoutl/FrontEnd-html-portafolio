@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import {FormGroup, FormControl, Validators, FormBuilder} from '@angular/forms';
+import {FormGroup, Validators, FormBuilder} from '@angular/forms';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
   title = 'Portafolio';
   forma!:FormGroup;
@@ -13,6 +15,18 @@ export class AppComponent {
     this.crearFormulario();
   }
 
+  crearFormulario(){
+    this.forma = this.fb.group({
+
+      nombre:['', Validators.required],
+      apellido:['', Validators.required],
+      correo:['', Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')],
+      contraseña:['', Validators.required, Validators.minLength(5), Validators.maxLength( 12)]
+    },{
+      Validators:this.passwordIguales('password', 'password2')
+    })
+  }
+  
 get nombreNoValido(){
   return this.forma.get('nombre')?.invalid && this.forma.get('nombre')?.touched;
 }  
@@ -32,17 +46,6 @@ get passwordNoValido(){
 get passwordNoValido2(){
   return this.forma.get('password2')?.invalid && this.forma.get('password2')?.touched;
 }
-  crearFormulario(){
-    this.forma = this.fb.group({
-      nombre:['', Validators.required],
-      apellido:['', Validators.required],
-      correo:['', Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')],
-      contraseña:['', Validators.required, Validators.minLength(5), Validators.maxLength( 12)]
-    },{
-      Validators:this.passwordIguales('password', 'password2')
-    })
-  }
-
   
 
   passNovalido(passName:string, passName2:string){
@@ -71,12 +74,9 @@ get passwordNoValido2(){
   }
 
   limpiar(){
-    this.forma.reset();
-    
-    
+    this.forma.reset(); 
   }
   
-
   passwordIguales(passName:string, passName2:string){
     return (formGroup:FormGroup) => {
       const passControl = formGroup.get(passName);
